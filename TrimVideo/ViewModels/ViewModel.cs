@@ -24,6 +24,20 @@ namespace TrimVideo.ViewModels
             set { _UpdateField(ref _videoProgress, value); }
         }
 
+        private TimeSpan _videoLowerBound;
+        public TimeSpan VideoLowerBound
+        {
+            get { return _videoLowerBound; }
+            set { _UpdateField(ref _videoLowerBound, value); }
+        }
+
+        private TimeSpan _videoUpperBound;
+        public TimeSpan VideoUpperBound
+        {
+            get { return _videoUpperBound; }
+            set { _UpdateField(ref _videoUpperBound, value); }
+        }
+
         private TimeSpan _videoLength;
         public TimeSpan VideoLength
         {

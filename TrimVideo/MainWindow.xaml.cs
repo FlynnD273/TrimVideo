@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 using TrimVideo.Controls;
+using TrimVideo.Converters;
 using TrimVideo.ViewModels;
 
 namespace TrimVideo
@@ -42,10 +43,12 @@ namespace TrimVideo
             if (_vm.IsPlaying)
             {
                 videoControl.Play();
+                _timer?.Start();
             }
             else
             {
                 videoControl.Pause();
+                _timer?.Stop();
             }
         }
 
@@ -58,6 +61,8 @@ namespace TrimVideo
             };
             _timer.Tick += (_, _) => _OnTick();
             _timer.Start();
+
+            videoControl.Position = TimeSpan.Zero;
         }
 
         private void _OnTick()
@@ -65,17 +70,22 @@ namespace TrimVideo
             if (!_isDragging)
             {
                 _vm.VideoProgress = videoControl.Position;
+                if (videoControl.Position > _vm.VideoUpperBound)
+                {
+                    videoControl.Position = _vm.VideoUpperBound;
+                    _vm.IsPlaying = false;
+                }
             }
         }
 
-        private void DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        private void TripleThumbSlider_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isDragging = true;
             videoControl.IsMuted = true;
             videoControl.Pause();
         }
 
-        private void DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        private void TripleThumbSlider_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             videoControl.Position = _vm.VideoProgress;
             _isDragging = false;
@@ -83,35 +93,24 @@ namespace TrimVideo
             UpdatePlayState();
         }
 
-        private void DragDelta(object sender, DragDeltaEventArgs e)
+        private void TripleThumbSlider_MouseMove(object sender, MouseEventArgs e)
         {
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
             videoControl.Position = _vm.VideoProgress;
         }
 
-        private void SliderLoaded(object sender, RoutedEventArgs e)
+        private void TripleThumbSlider_Loaded(object sender, RoutedEventArgs e)
         {
-            TripleThumbSlider slider = (TripleThumbSlider)sender;
-            MouseButtonEventHandler handler = new ((sender, e) =>
-                {
-                    Track track = slider.Template.FindName("PART_Track", slider) as Track;
-
-                    if (track == null || track.Thumb == null || track.Thumb.IsMouseOver) return;
-
-                    track.Thumb.UpdateLayout();
-
-                    track.Thumb.RaiseEvent(new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left)
-                    {
-                        RoutedEvent = MouseLeftButtonDownEvent,
-                        Source = track.Thumb,
-                    });
-
-                    DragDelta(null, null);
-                }
-            );
-
-            slider.AddHandler(PreviewMouseLeftButtonDownEvent, handler, true);
-
+            videoControl.Play();
             UpdatePlayState();
+        }
+
+        private void TripleThumbSlider_Initialized(object sender, EventArgs e)
+        {
+            var slider = sender as TripleThumbSlider;
+            slider.LowerValue = 0;
+            slider.UpperValue = (double)new DoubleToTimeSpanConverter().Convert(_vm.VideoLength, null, null, null);
         }
     }
 }

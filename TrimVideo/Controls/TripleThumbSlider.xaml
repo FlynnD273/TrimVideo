@@ -8,83 +8,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 	<UserControl.Resources>
-		<ControlTemplate x:Key="SliderHorizontal" TargetType="{x:Type Slider}">
-			<Border x:Name="border" BorderBrush="Transparent" BorderThickness="2" Background="{TemplateBinding Background}" VerticalAlignment="Center" SnapsToDevicePixels="True">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
-					</Grid.RowDefinitions>
-					<Border x:Name="TrackBackground" BorderThickness="1" Margin="25,0" VerticalAlignment="center" Background="LightBlue">
-						<Rectangle x:Name="PART_SelectionRange" Fill="DarkBlue" HorizontalAlignment="Left" Height="30" VerticalAlignment="Stretch"/>
-					</Border>
-					<Track x:Name="PART_Track">
-						<Track.DecreaseRepeatButton>
-							<RepeatButton Command="{x:Static Slider.DecreaseLarge}" Visibility="Hidden" Margin="-25"/>
-						</Track.DecreaseRepeatButton>
-						<Track.IncreaseRepeatButton>
-							<RepeatButton Command="{x:Static Slider.IncreaseLarge}" Visibility="Hidden" Margin="-25"/>
-						</Track.IncreaseRepeatButton>
-						<Track.Thumb>
-							<Thumb x:Name="Thumb" Focusable="False" OverridesDefaultStyle="True" VerticalAlignment="Center">
-								<Thumb.Template>
-									<ControlTemplate>
-										<Ellipse Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="Black" StrokeThickness="2" Stroke="DarkGray"/>
-									</ControlTemplate>
-								</Thumb.Template>
-							</Thumb>
-						</Track.Thumb>
-					</Track>
-				</Grid>
-			</Border>
-		</ControlTemplate>
-
-		<ControlTemplate x:Key="BottomSliderHorizontal" TargetType="{x:Type Slider}">
-			<Border x:Name="border" BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center" SnapsToDevicePixels="True">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
-					</Grid.RowDefinitions>
-					<Track x:Name="PART_Track">
-						<Track.DecreaseRepeatButton>
-							<RepeatButton Command="{x:Static Slider.DecreaseLarge}" Visibility="Hidden" Margin="-25"/>
-						</Track.DecreaseRepeatButton>
-						<Track.IncreaseRepeatButton>
-							<RepeatButton Command="{x:Static Slider.IncreaseLarge}" Visibility="Hidden" Margin="-25"/>
-						</Track.IncreaseRepeatButton>
-						<Track.Thumb>
-							<Thumb x:Name="Thumb" Focusable="False" OverridesDefaultStyle="True" VerticalAlignment="Center">
-								<Thumb.Template>
-									<ControlTemplate>
-										<Rectangle Width="20" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="Black" StrokeThickness="2" Stroke="DarkGray"/>
-									</ControlTemplate>
-								</Thumb.Template>
-							</Thumb>
-						</Track.Thumb>
-					</Track>
-				</Grid>
-			</Border>
-		</ControlTemplate>
-
-		<Style x:Key="TopSlider" TargetType="{x:Type Slider}">
-			<Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderBrush" Value="Transparent"/>
-			<Setter Property="Template" Value="{StaticResource SliderHorizontal}"/>
-		</Style>
 		
-		<Style x:Key="BottomSlider" TargetType="{x:Type Slider}">
-			<Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderBrush" Value="Transparent"/>
-			<Setter Property="Template" Value="{StaticResource BottomSliderHorizontal}"/>
-		</Style>
 	</UserControl.Resources>
-	<Canvas MouseDown="MouseDown" MouseMove="MouseMove" MouseUp="MouseUp">
-		<Rectangle Width="20" Height="80" Fill="#FF272727">
-			<Rectangle.RenderTransform>
-				<TranslateTransform X="{Binding ElementName=root, Path=MiddleValue}"/>
-			</Rectangle.RenderTransform>
-		</Rectangle>
+	<Canvas x:Name="canvas" MouseDown="MouseDown" MouseMove="MouseMove" MouseUp="MouseUp" 
+					Background="Gray"
+					Width="{Binding ElementName=root, Path=ActualWidth}" Height="60">
+		<Rectangle x:Name="lowerThumb" Canvas.Top="-20" Width="20" Height="60" Fill="#FF0A8200"/>
+		<Rectangle x:Name="upperThumb" Canvas.Top="-20" Width="20" Height="60" Fill="#FF0A8200"/>
+		<Rectangle x:Name="middleThumb" Canvas.Top="-10" Width="20" Height="80" Fill="#FF272727"/>
 		<!--<Slider Style="{DynamicResource TopSlider}" x:Name="lowerSlider"
           VerticalAlignment="Center"
           Minimum="{Binding ElementName=root, Path=Minimum}"

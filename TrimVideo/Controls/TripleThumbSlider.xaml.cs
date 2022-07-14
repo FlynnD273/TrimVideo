@@ -41,7 +41,7 @@ namespace TrimVideo.Controls
         public double LowerValue
         {
             get { return (double)GetValue(LowerValueProperty); }
-            set { SetValue(LowerValueProperty, value); MiddleValue = LowerValue; }
+            set { SetValue(LowerValueProperty, value); }
         }
 
         public double MiddleValue
@@ -53,7 +53,7 @@ namespace TrimVideo.Controls
         public double UpperValue
         {
             get { return (double)GetValue(UpperValueProperty); }
-            set { SetValue(UpperValueProperty, value); MiddleValue = UpperValue; }
+            set { SetValue(UpperValueProperty, value); }
         }
 
         public double Maximum
@@ -67,12 +67,32 @@ namespace TrimVideo.Controls
             InitializeComponent();
         }
 
+        private void _UpdateMiddleThumb()
+        {
+            middleThumb.SetValue(Canvas.LeftProperty, (MiddleValue - Minimum) / (Maximum - Minimum) * canvas.ActualWidth - middleThumb.ActualWidth / 2);
+        }
+
+        private void _UpdateLowerThumb()
+        {
+            lowerThumb.SetValue(Canvas.LeftProperty, (LowerValue - Minimum) / (Maximum - Minimum) * canvas.ActualWidth - lowerThumb.ActualWidth / 2);
+        }
+
+        private void _UpdateUpperThumb()
+        {
+            upperThumb.SetValue(Canvas.LeftProperty, (UpperValue - Minimum) / (Maximum - Minimum) * canvas.ActualWidth - upperThumb.ActualWidth / 2);
+        }
+
         private static object LowerValueCoerceValueCallback(DependencyObject target, object valueObject)
         {
             TripleThumbSlider targetSlider = (TripleThumbSlider)target;
             double value = (double)valueObject;
 
-            return Math.Min(value, targetSlider.UpperValue);
+            targetSlider._UpdateLowerThumb();
+            double realValue = Math.Min(Math.Max(Math.Min(value, targetSlider.UpperValue), targetSlider.Minimum), targetSlider.Maximum);
+            targetSlider.MiddleValue = realValue;
+            targetSlider._UpdateMiddleThumb();
+
+            return realValue;
         }
 
         private static object MiddleValueCoerceValueCallback(DependencyObject target, object valueObject)
@@ -80,7 +100,10 @@ namespace TrimVideo.Controls
             TripleThumbSlider targetSlider = (TripleThumbSlider)target;
             double value = (double)valueObject;
 
-            return Math.Min(Math.Max(value, targetSlider.LowerValue), targetSlider.MiddleValue);
+            targetSlider._UpdateMiddleThumb();
+            double realValue = Math.Min(Math.Max(value, targetSlider.LowerValue), targetSlider.UpperValue);
+
+            return realValue;
         }
 
         private static object UpperValueCoerceValueCallback(DependencyObject target, object valueObject)
@@ -88,30 +111,12 @@ namespace TrimVideo.Controls
             TripleThumbSlider targetSlider = (TripleThumbSlider)target;
             double value = (double)valueObject;
 
-            return Math.Max(value, targetSlider.LowerValue);
-        }
+            targetSlider._UpdateUpperThumb();
+            double realValue = Math.Min(Math.Max(Math.Max(value, targetSlider.LowerValue), targetSlider.Minimum), targetSlider.Maximum);
+            targetSlider.MiddleValue = realValue;
+            targetSlider._UpdateMiddleThumb();
 
-        private void SliderLoaded(object sender, RoutedEventArgs e)
-        {
-            MouseButtonEventHandler handler = new((sender, e) =>
-            {
-                Slider slider = sender as Slider;
-                
-                Track track = slider.Template.FindName("PART_Track", slider) as Track;
-
-                if (!slider.IsMoveToPointEnabled || track == null || track.Thumb == null || track.Thumb.IsMouseOver) return;
-
-                track.Thumb.UpdateLayout();
-
-                track.Thumb.RaiseEvent(new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left)
-                {
-                    RoutedEvent = MouseLeftButtonDownEvent,
-                    Source = track.Thumb,
-                });
-            }
-            );
-
-            (sender as Slider).AddHandler(PreviewMouseLeftButtonDownEvent, handler, true);
+            return realValue;
         }
 
         private enum DragMode
@@ -125,18 +130,38 @@ namespace TrimVideo.Controls
 
         private void MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Canvas grid = (Canvas)sender;
-            Point position = e.GetPosition(grid);
+            Canvas parent = (Canvas)sender;
+            Point position = e.GetPosition(parent);
 
             // Remap range from 0 - grid width to Minimum - Maximum
-            double xValue = position.X / grid.Width * (Maximum - Minimum) + Minimum;
+            double xValue = position.X / parent.ActualWidth * (Maximum - Minimum) + Minimum;
 
-            if (xValue < LowerValue)
+            var over = Mouse.DirectlyOver;
+
+            bool onThumb = false;
+            if (over == lowerThumb)
+            {
+                LowerValue = xValue;
+                onThumb = true;
+                _dragMode = DragMode.LowerValue;
+            }
+            else if (over == upperThumb)
+            {
+                UpperValue = xValue;
+                onThumb = true;
+                _dragMode = DragMode.UpperValue;
+            }
+
+            parent.CaptureMouse();
+
+            if (onThumb) return;
+
+            if (xValue <= LowerValue)
             {
                 LowerValue = xValue;
                 _dragMode = DragMode.LowerValue;
             }
-            else if (xValue > UpperValue)
+            else if (xValue >= UpperValue)
             {
                 UpperValue = xValue;
                 _dragMode = DragMode.UpperValue;
@@ -153,10 +178,14 @@ namespace TrimVideo.Controls
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
             Canvas parent = (Canvas)sender;
+
+            if (!parent.IsMouseCaptured) 
+                return;
+
             Point position = e.GetPosition(parent);
 
             // Remap range from 0 - grid width to Minimum - Maximum
-            double xValue = position.X / parent.Width * (Maximum - Minimum) + Minimum;
+            double xValue = position.X / parent.ActualWidth * (Maximum - Minimum) + Minimum;
 
             switch (_dragMode)
             {
@@ -164,7 +193,7 @@ namespace TrimVideo.Controls
                     LowerValue = xValue;
                     break;
                 case DragMode.MiddleValue:
-                    MiddleValue = xValue;
+                    MiddleValue = Math.Min(Math.Max(xValue, LowerValue), UpperValue);
                     break;
                 case DragMode.UpperValue:
                     UpperValue = xValue;
@@ -174,7 +203,9 @@ namespace TrimVideo.Controls
 
         private void MouseUp(object sender, MouseButtonEventArgs e)
         {
+            Canvas parent = (Canvas)sender;
 
+            parent.ReleaseMouseCapture();
         }
     }
 }
