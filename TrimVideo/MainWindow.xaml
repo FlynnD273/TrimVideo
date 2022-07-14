@@ -1,0 +1,42 @@
+﻿<Window x:Class="TrimVideo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrimVideo"
+        xmlns:vm="clr-namespace:TrimVideo.ViewModels"
+        xmlns:c="clr-namespace:TrimVideo.Converters"
+				xmlns:controls="clr-namespace:TrimVideo.Controls"
+        mc:Ignorable="d"
+        Title="Trim Video" Height="450" Width="800"
+				WindowState="Maximized">
+	<Window.DataContext>
+		<vm:ViewModel/>
+	</Window.DataContext>
+
+	<Window.InputBindings>
+		<KeyBinding Key="Space" Command="{Binding TogglePlaybackCommand}"/>
+	</Window.InputBindings>
+
+	<Window.Resources>
+		<c:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter"/>
+
+
+	</Window.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" Source="{Binding FilePath}" MediaOpened="OnMediaLoaded" ScrubbingEnabled="True"/>
+		<TextBlock Grid.Row="1" Text="{Binding VideoProgress, Mode=OneWay}"/>
+		<controls:TripleThumbSlider Grid.Row="2" HorizontalAlignment="Stretch" Margin="20"
+						MiddleValue="{Binding VideoProgress, Converter={StaticResource DoubleToTimeSpanConverter}}" 
+						Minimum="0" Maximum="{Binding VideoLength, Converter={StaticResource DoubleToTimeSpanConverter}}" 
+						Loaded="SliderLoaded"
+						LowerValue="0" UpperValue="50"/>
+	</Grid>
+</Window>
