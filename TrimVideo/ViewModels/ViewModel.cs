@@ -72,18 +72,28 @@ namespace TrimVideo.ViewModels
             TogglePlaybackCommand = new DelegateCommand(_TogglePlayback);
 
             var args = Environment.GetCommandLineArgs().Skip(1);
-            if (args.Count() > 0)
+            do
             {
-                if (Directory.Exists(args.First()))
+                if (args.Count() > 0)
                 {
-                    args = Directory.GetFiles(args.First());
-                }
+                    if (Directory.Exists(args.First()))
+                    {
+                        args = Directory.GetFiles(args.First());
+                    }
 
-                FilePath = args.First();
-                if (args.Count() > 1)
-                {
-                    _otherArguments = args.Skip(1).Where(x => File.Exists(x)).Select(x => $"\"{x}\"");
+                    if (File.Exists(args.First())) FilePath = args.First();
+
+                    if (args.Count() > 1)
+                    {
+                        _otherArguments = args.Skip(1).Where(x => File.Exists(x)).Select(x => $"\"{x}\"");
+                    }
                 }
+            } 
+            while (string.IsNullOrEmpty(FilePath) && _otherArguments?.FirstOrDefault() != null);
+
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                Environment.Exit(-1);
             }
         }
 
