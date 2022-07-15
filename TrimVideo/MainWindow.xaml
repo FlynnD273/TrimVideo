@@ -30,15 +30,13 @@
 
 		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" Source="{Binding FilePath}" MediaOpened="OnMediaLoaded" ScrubbingEnabled="True" />
 		<TextBlock Grid.Row="1" Text="{Binding VideoProgress, Mode=OneWay}" />
-		<controls:TripleThumbSlider Grid.Row="2" HorizontalAlignment="Stretch" Margin="20" Height="80"
+		<controls:TripleThumbSlider x:Name="timelineSlider" Grid.Row="2" HorizontalAlignment="Stretch" Margin="20" Height="80"
 						MiddleValue="{Binding VideoProgress, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}"
-						Minimum="0" Maximum="{Binding VideoLength, Converter={StaticResource DoubleToTimeSpanConverter}}"
 						LowerValue="{Binding VideoLowerBound, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}" 
 						UpperValue="{Binding VideoUpperBound, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}"
 						MouseLeftButtonDown="TripleThumbSlider_MouseLeftButtonDown"
 						MouseLeftButtonUp="TripleThumbSlider_MouseLeftButtonUp"
 						MouseMove="TripleThumbSlider_MouseMove" 
-						Loaded="TripleThumbSlider_Loaded"
-						Initialized="TripleThumbSlider_Initialized"/>
+						Loaded="TripleThumbSlider_Loaded"/>
 	</Grid>
 </Window>

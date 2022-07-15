@@ -24,11 +24,11 @@ namespace TrimVideo.Controls
         public static readonly DependencyProperty MinimumProperty =
             DependencyProperty.Register("Minimum", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(0d));
         public static readonly DependencyProperty LowerValueProperty =
-            DependencyProperty.Register("LowerValue", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(0d, null, LowerValueCoerceValueCallback));
+            DependencyProperty.Register("LowerValue", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(0d, LowerValuePropertyChangedCallback, LowerValueCoerceValueCallback));
         public static readonly DependencyProperty MiddleValueProperty =
-            DependencyProperty.Register("MiddleValue", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(1d, null, MiddleValueCoerceValueCallback));
+            DependencyProperty.Register("MiddleValue", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(0d, MiddleValuePropertyChangedCallback, MiddleValueCoerceValueCallback));
         public static readonly DependencyProperty UpperValueProperty =
-            DependencyProperty.Register("UpperValue", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(1d, null, UpperValueCoerceValueCallback));
+            DependencyProperty.Register("UpperValue", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(1d, UpperValuePropertyChangedCallback, UpperValueCoerceValueCallback));
         public static readonly DependencyProperty MaximumProperty =
             DependencyProperty.Register("Maximum", typeof(double), typeof(TripleThumbSlider), new UIPropertyMetadata(1d));
 
@@ -67,19 +67,29 @@ namespace TrimVideo.Controls
             InitializeComponent();
         }
 
-        private void _UpdateMiddleThumb()
+        private static void LowerValuePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            middleThumb.SetValue(Canvas.LeftProperty, (MiddleValue - Minimum) / (Maximum - Minimum) * canvas.ActualWidth - middleThumb.ActualWidth / 2);
+            var t = (TripleThumbSlider)d;
+            var lowerThumb = t.lowerThumb;
+            lowerThumb.SetValue(Canvas.LeftProperty, (t.LowerValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth - lowerThumb.ActualWidth / 2);
+
+            t.MiddleValue = t.LowerValue;
         }
 
-        private void _UpdateLowerThumb()
+        private static void MiddleValuePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            lowerThumb.SetValue(Canvas.LeftProperty, (LowerValue - Minimum) / (Maximum - Minimum) * canvas.ActualWidth - lowerThumb.ActualWidth / 2);
+            var t = (TripleThumbSlider)d;
+            var middleThumb = t.middleThumb;
+            middleThumb.SetValue(Canvas.LeftProperty, (t.MiddleValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth - middleThumb.ActualWidth / 2);
         }
 
-        private void _UpdateUpperThumb()
+        private static void UpperValuePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            upperThumb.SetValue(Canvas.LeftProperty, (UpperValue - Minimum) / (Maximum - Minimum) * canvas.ActualWidth - upperThumb.ActualWidth / 2);
+            var t = (TripleThumbSlider)d;
+            var upperThumb = t.upperThumb;
+            upperThumb.SetValue(Canvas.LeftProperty, (t.UpperValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth - upperThumb.ActualWidth / 2);
+
+            t.MiddleValue = t.UpperValue;
         }
 
         private static object LowerValueCoerceValueCallback(DependencyObject target, object valueObject)
@@ -87,12 +97,7 @@ namespace TrimVideo.Controls
             TripleThumbSlider targetSlider = (TripleThumbSlider)target;
             double value = (double)valueObject;
 
-            targetSlider._UpdateLowerThumb();
-            double realValue = Math.Min(Math.Max(Math.Min(value, targetSlider.UpperValue), targetSlider.Minimum), targetSlider.Maximum);
-            targetSlider.MiddleValue = realValue;
-            targetSlider._UpdateMiddleThumb();
-
-            return realValue;
+            return Math.Min(Math.Max(Math.Min(value, targetSlider.UpperValue), targetSlider.Minimum), targetSlider.Maximum);
         }
 
         private static object MiddleValueCoerceValueCallback(DependencyObject target, object valueObject)
@@ -100,10 +105,7 @@ namespace TrimVideo.Controls
             TripleThumbSlider targetSlider = (TripleThumbSlider)target;
             double value = (double)valueObject;
 
-            targetSlider._UpdateMiddleThumb();
-            double realValue = Math.Min(Math.Max(value, targetSlider.LowerValue), targetSlider.UpperValue);
-
-            return realValue;
+            return Math.Min(Math.Max(value, targetSlider.LowerValue), targetSlider.UpperValue);
         }
 
         private static object UpperValueCoerceValueCallback(DependencyObject target, object valueObject)
@@ -111,12 +113,7 @@ namespace TrimVideo.Controls
             TripleThumbSlider targetSlider = (TripleThumbSlider)target;
             double value = (double)valueObject;
 
-            targetSlider._UpdateUpperThumb();
-            double realValue = Math.Min(Math.Max(Math.Max(value, targetSlider.LowerValue), targetSlider.Minimum), targetSlider.Maximum);
-            targetSlider.MiddleValue = realValue;
-            targetSlider._UpdateMiddleThumb();
-
-            return realValue;
+            return Math.Min(Math.Max(Math.Max(value, targetSlider.LowerValue), targetSlider.Minimum), targetSlider.Maximum);
         }
 
         private enum DragMode
@@ -206,6 +203,8 @@ namespace TrimVideo.Controls
             Canvas parent = (Canvas)sender;
 
             parent.ReleaseMouseCapture();
+
+            if (_dragMode == DragMode.UpperValue) MiddleValue = LowerValue;
         }
     }
 }

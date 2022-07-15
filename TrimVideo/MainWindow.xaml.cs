@@ -54,7 +54,6 @@ namespace TrimVideo
 
         private void OnMediaLoaded(object sender, RoutedEventArgs e)
         {
-            _vm.VideoLength = videoControl.NaturalDuration.TimeSpan;
             _timer = new()
             {
                 Interval = TimeSpan.FromMilliseconds(200),
@@ -62,7 +61,11 @@ namespace TrimVideo
             _timer.Tick += (_, _) => _OnTick();
             _timer.Start();
 
-            videoControl.Position = TimeSpan.Zero;
+            timelineSlider.Minimum = 0;
+            timelineSlider.Maximum = videoControl.NaturalDuration.TimeSpan.TotalSeconds;
+            _vm.VideoLength = videoControl.NaturalDuration.TimeSpan;
+            var t = timelineSlider;
+            videoControl.Position = _vm.VideoProgress;
         }
 
         private void _OnTick()
@@ -104,13 +107,6 @@ namespace TrimVideo
         {
             videoControl.Play();
             UpdatePlayState();
-        }
-
-        private void TripleThumbSlider_Initialized(object sender, EventArgs e)
-        {
-            var slider = sender as TripleThumbSlider;
-            slider.LowerValue = 0;
-            slider.UpperValue = (double)new DoubleToTimeSpanConverter().Convert(_vm.VideoLength, null, null, null);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace TrimVideo.ViewModels
         public TimeSpan VideoLength
         {
             get { return _videoLength; }
-            set { _UpdateField(ref _videoLength, value); }
+            set { _UpdateField(ref _videoLength, value, _ => _InitializeTimestamps()); }
         }
 
         private bool _isPlaying = true;
@@ -66,6 +66,13 @@ namespace TrimVideo.ViewModels
             TogglePlaybackCommand = new DelegateCommand(_TogglePlayback);
 
             Environment.GetCommandLineArgs();
+        }
+
+        private void _InitializeTimestamps ()
+        {
+            VideoUpperBound = VideoLength * 2 / 3;
+            VideoLowerBound = VideoLength * 1 / 3;
+            VideoProgress = VideoLowerBound;
         }
 
         private void _SelectFile()

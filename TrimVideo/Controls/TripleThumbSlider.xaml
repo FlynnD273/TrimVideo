@@ -16,26 +16,5 @@
 		<Rectangle x:Name="lowerThumb" Canvas.Top="-20" Width="20" Height="60" Fill="#FF0A8200"/>
 		<Rectangle x:Name="upperThumb" Canvas.Top="-20" Width="20" Height="60" Fill="#FF0A8200"/>
 		<Rectangle x:Name="middleThumb" Canvas.Top="-10" Width="20" Height="80" Fill="#FF272727"/>
-		<!--<Slider Style="{DynamicResource TopSlider}" x:Name="lowerSlider"
-          VerticalAlignment="Center"
-          Minimum="{Binding ElementName=root, Path=Minimum}"
-          Maximum="{Binding ElementName=root, Path=Maximum}"
-          Value="{Binding ElementName=root, Path=LowerValue, Mode=TwoWay}"
-          IsSnapToTickEnabled="False"
-          />
-		<Slider Style="{DynamicResource BottomSlider}" x:Name="middleSlider"
-          VerticalAlignment="Center"
-          Minimum="{Binding ElementName=root, Path=Minimum}"
-          Maximum="{Binding ElementName=root, Path=Maximum}"
-          Value="{Binding ElementName=root, Path=MiddleValue, Mode=TwoWay}"
-          IsSnapToTickEnabled="False"
-          />
-		<Slider Style="{DynamicResource BottomSlider}" x:Name="upperSlider"
-          VerticalAlignment="Center"
-          Minimum="{Binding ElementName=root, Path=Minimum}"
-          Maximum="{Binding ElementName=root, Path=Maximum}"
-          Value="{Binding ElementName=root, Path=UpperValue, Mode=TwoWay}"
-          IsSnapToTickEnabled="False"
-          />-->
 	</Canvas>
 </UserControl>
