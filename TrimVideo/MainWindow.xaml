@@ -15,6 +15,7 @@
 
 	<Window.InputBindings>
 		<KeyBinding Key="Space" Command="{Binding TogglePlaybackCommand}" />
+		<KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveFileCommand}" />
 	</Window.InputBindings>
 
 	<Window.Resources>
@@ -29,7 +30,7 @@
 		</Grid.RowDefinitions>
 
 		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" Source="{Binding FilePath}" MediaOpened="OnMediaLoaded" ScrubbingEnabled="True" />
-		<TextBlock Grid.Row="1" Text="{Binding VideoProgress, Mode=OneWay}" />
+		<TextBlock Grid.Row="1" FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold" Text="{Binding ClipLength, Mode=OneWay}" />
 		<controls:TripleThumbSlider x:Name="timelineSlider" Grid.Row="2" HorizontalAlignment="Stretch" Margin="20" Height="80"
 						MiddleValue="{Binding VideoProgress, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}"
 						LowerValue="{Binding VideoLowerBound, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}" 

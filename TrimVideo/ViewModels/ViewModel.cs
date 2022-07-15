@@ -1,6 +1,8 @@
 ﻿using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +12,7 @@ namespace TrimVideo.ViewModels
 {
     internal class ViewModel : NotifyPropertyChangedBase
     {
-        private string _filePath = @"C:\Users\Flynn\Downloads\Valorant 2022.07.03 - 13.48.06.07.DVR.mp4";
+        private string _filePath;
         public string FilePath
         {
             get { return _filePath; }
@@ -28,14 +30,14 @@ namespace TrimVideo.ViewModels
         public TimeSpan VideoLowerBound
         {
             get { return _videoLowerBound; }
-            set { _UpdateField(ref _videoLowerBound, value); }
+            set { _UpdateField(ref _videoLowerBound, value); _RaisePropertyChanged(nameof(ClipLength)); }
         }
 
         private TimeSpan _videoUpperBound;
         public TimeSpan VideoUpperBound
         {
             get { return _videoUpperBound; }
-            set { _UpdateField(ref _videoUpperBound, value); }
+            set { _UpdateField(ref _videoUpperBound, value); _RaisePropertyChanged(nameof(ClipLength)); }
         }
 
         private TimeSpan _videoLength;
@@ -44,6 +46,8 @@ namespace TrimVideo.ViewModels
             get { return _videoLength; }
             set { _UpdateField(ref _videoLength, value, _ => _InitializeTimestamps()); }
         }
+
+        public TimeSpan ClipLength { get => VideoUpperBound - VideoLowerBound; }
 
         private bool _isPlaying = true;
         public bool IsPlaying
@@ -58,6 +62,8 @@ namespace TrimVideo.ViewModels
 
         public ICommand TogglePlaybackCommand { get; }
 
+        private IEnumerable<string> _otherArguments;
+
         public ViewModel ()
         {
             SelectFileCommand = new DelegateCommand(_SelectFile);
@@ -65,7 +71,20 @@ namespace TrimVideo.ViewModels
             SaveFileCommand = new DelegateCommand(_SaveFile);
             TogglePlaybackCommand = new DelegateCommand(_TogglePlayback);
 
-            Environment.GetCommandLineArgs();
+            var args = Environment.GetCommandLineArgs().Skip(1);
+            if (args.Count() > 0)
+            {
+                if (Directory.Exists(args.First()))
+                {
+                    args = Directory.GetFiles(args.First());
+                }
+
+                FilePath = args.First();
+                if (args.Count() > 1)
+                {
+                    _otherArguments = args.Skip(1).Where(x => File.Exists(x)).Select(x => $"\"{x}\"");
+                }
+            }
         }
 
         private void _InitializeTimestamps ()
@@ -87,7 +106,36 @@ namespace TrimVideo.ViewModels
 
         private void _SaveFile()
         {
-            // Todo
+            IsPlaying = false;
+
+            Process process = new ()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "ffmpeg",
+                    Arguments = $" -i \"{FilePath}\" -ss {VideoLowerBound} -to {VideoUpperBound} -c copy \"{Path.Combine(Path.GetDirectoryName(FilePath), "_" + Path.GetFileNameWithoutExtension(FilePath) + "_Trim" + Path.GetExtension(FilePath))}\" -y",
+                    UseShellExecute = false,
+                    CreateNoWindow = false,
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+
+            if (_otherArguments.FirstOrDefault() != null)
+            {
+                Process newInstance = new()
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = Environment.ProcessPath,
+                        Arguments = string.Join(' ', _otherArguments),
+                        UseShellExecute = false,
+                        CreateNoWindow = false,
+                    }
+                };
+                newInstance.Start();
+                Environment.Exit(0);
+            }
         }
 
         private void _TogglePlayback()

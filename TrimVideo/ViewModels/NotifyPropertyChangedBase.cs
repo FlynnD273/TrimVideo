@@ -25,6 +25,11 @@ namespace TrimVideo.ViewModels
 
             field = newValue;
             onChangedCallback?.Invoke(oldValue);
+            _RaisePropertyChanged(propertyName);
+        }
+
+        protected void _RaisePropertyChanged (string propertyName)
+        {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

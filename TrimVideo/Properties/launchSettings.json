@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TrimVideo": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\Flynn\\Videos\\Test"
+    }
+  }
+}
