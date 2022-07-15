@@ -1,5 +1,4 @@
 # TrimVideo
-------
 
 A lightweight utility for trimming videos quickly.
 
