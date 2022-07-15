@@ -8,7 +8,11 @@
         xmlns:vm="clr-namespace:TrimVideo.ViewModels"
         mc:Ignorable="d"
         Title="Trim Video" Height="450" Width="800"
-				WindowState="Maximized">
+				Background="#222222"
+				WindowState="Maximized"
+				AllowDrop="True" 
+				DragOver="Window_DragOver"
+				Drop="Window_DragDrop">
 	<Window.DataContext>
 		<vm:ViewModel />
 	</Window.DataContext>
@@ -20,8 +24,8 @@
 
 	<Window.Resources>
 		<c:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />
+		<c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 	</Window.Resources>
-
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
@@ -29,8 +33,14 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" Source="{Binding FilePath}" MediaOpened="OnMediaLoaded" ScrubbingEnabled="True" />
-		<TextBlock Grid.Row="1" FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold" Text="{Binding ClipLength, Mode=OneWay}" />
+		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" 
+									Source="{Binding FilePath}" MediaOpened="OnMediaLoaded" 
+									ScrubbingEnabled="True" 
+									Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+		<TextBlock Grid.Row="1" FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold" 
+							 Foreground="DarkGray"
+							 Text="{Binding ClipLength, Mode=OneWay}" 
+							 Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 		<controls:TripleThumbSlider x:Name="timelineSlider" Grid.Row="2" HorizontalAlignment="Stretch" Margin="20" Height="80"
 						MiddleValue="{Binding VideoProgress, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}"
 						LowerValue="{Binding VideoLowerBound, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}" 
@@ -38,6 +48,36 @@
 						MouseLeftButtonDown="TripleThumbSlider_MouseLeftButtonDown"
 						MouseLeftButtonUp="TripleThumbSlider_MouseLeftButtonUp"
 						MouseMove="TripleThumbSlider_MouseMove" 
-						Loaded="TripleThumbSlider_Loaded"/>
+						Loaded="TripleThumbSlider_Loaded"
+						Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+		<Border BorderThickness="4" Grid.RowSpan="3" 
+						Margin="50"
+						Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+			<Border.BorderBrush>
+				<DrawingBrush Viewport="0,0,20,20" ViewportUnits="Absolute" TileMode="Tile">
+					<DrawingBrush.Drawing>
+						<DrawingGroup>
+							<GeometryDrawing Brush="DarkGray">
+								<GeometryDrawing.Geometry>
+									<GeometryGroup>
+										<RectangleGeometry Rect="0,0,50,50" />
+										<RectangleGeometry Rect="50,50,50,50" />
+									</GeometryGroup>
+								</GeometryDrawing.Geometry>
+							</GeometryDrawing>
+						</DrawingGroup>
+					</DrawingBrush.Drawing>
+				</DrawingBrush>
+			</Border.BorderBrush>
+			<TextBlock Text="Drag and drop a file or folder here" 
+								 FontFamily="Cascadia Code" 
+								 TextWrapping="Wrap"
+								 Margin="50"
+								 FontSize="50" 
+								 Foreground="DarkGray"
+								 VerticalAlignment="Center" 
+								 TextAlignment="Center"/>
+		</Border>
 	</Grid>
 </Window>

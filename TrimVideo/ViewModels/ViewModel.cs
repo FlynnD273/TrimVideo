@@ -64,6 +64,13 @@ namespace TrimVideo.ViewModels
 
         private IEnumerable<string> _otherArguments;
 
+        private bool _isActivated = true;
+        public bool IsActivated
+        {
+            get { return _isActivated; }
+            set { _UpdateField(ref _isActivated, value); }
+        }
+
         public ViewModel ()
         {
             SelectFileCommand = new DelegateCommand(_SelectFile);
@@ -78,14 +85,14 @@ namespace TrimVideo.ViewModels
                 {
                     if (Directory.Exists(args.First()))
                     {
-                        args = Directory.GetFiles(args.First());
+                        args = args.Concat(Directory.GetFiles(args.First())).Skip(1);
                     }
 
                     if (File.Exists(args.First())) FilePath = args.First();
 
                     if (args.Count() > 1)
                     {
-                        _otherArguments = args.Skip(1).Where(x => File.Exists(x)).Select(x => $"\"{x}\"");
+                        _otherArguments = args.Skip(1).Where(x => File.Exists(x));
                     }
                 }
             } 
@@ -93,7 +100,7 @@ namespace TrimVideo.ViewModels
 
             if (string.IsNullOrEmpty(FilePath))
             {
-                Environment.Exit(-1);
+                IsActivated = false;
             }
         }
 
@@ -105,11 +112,6 @@ namespace TrimVideo.ViewModels
         }
 
         private void _SelectFile()
-        {
-            // Todo
-        }
-
-        private void _OpenFilePath()
         {
             // Todo
         }
@@ -133,19 +135,24 @@ namespace TrimVideo.ViewModels
 
             if (_otherArguments.FirstOrDefault() != null)
             {
-                Process newInstance = new()
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = Environment.ProcessPath,
-                        Arguments = string.Join(' ', _otherArguments),
-                        UseShellExecute = false,
-                        CreateNoWindow = false,
-                    }
-                };
-                newInstance.Start();
-                Environment.Exit(0);
+                NewInstance(_otherArguments);
             }
+        }
+
+        public void NewInstance(IEnumerable<string> args)
+        {
+            Process newInstance = new()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Environment.ProcessPath,
+                    Arguments = string.Join(' ', args.Select(x => $"\"{x}\"")),
+                    UseShellExecute = false,
+                    CreateNoWindow = false,
+                }
+            };
+            newInstance.Start();
+            Environment.Exit(0);
         }
 
         private void _TogglePlayback()
