@@ -20,6 +20,7 @@
 	<Window.InputBindings>
 		<KeyBinding Key="Space" Command="{Binding TogglePlaybackCommand}" />
 		<KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveFileCommand}" />
+		<KeyBinding Key="Esc" Command="{Binding SkipFileCommand}" />
 	</Window.InputBindings>
 
 	<Window.Resources>
@@ -36,7 +37,11 @@
 		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" 
 									Source="{Binding FilePath}" MediaOpened="OnMediaLoaded" 
 									ScrubbingEnabled="True" 
-									Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+									Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<MediaElement.InputBindings>
+				<MouseBinding Command="{Binding TogglePlaybackCommand}" MouseAction="LeftClick"/>
+			</MediaElement.InputBindings>
+		</MediaElement>
 		<TextBlock Grid.Row="1" FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold" 
 							 Foreground="DarkGray"
 							 Text="{Binding ClipLength, Mode=OneWay}" 

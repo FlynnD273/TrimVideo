@@ -59,6 +59,7 @@ namespace TrimVideo.ViewModels
         public ICommand SelectFileCommand { get; }
         public ICommand OpenFilePathCommand { get; }
         public ICommand SaveFileCommand { get; }
+        public ICommand SkipFileCommand { get; }
 
         public ICommand TogglePlaybackCommand { get; }
 
@@ -74,9 +75,9 @@ namespace TrimVideo.ViewModels
         public ViewModel ()
         {
             SelectFileCommand = new DelegateCommand(_SelectFile);
-            OpenFilePathCommand = new DelegateCommand(_OpenFilePath);
             SaveFileCommand = new DelegateCommand(_SaveFile);
             TogglePlaybackCommand = new DelegateCommand(_TogglePlayback);
+            SkipFileCommand = new DelegateCommand(_SkipFile);
 
             var args = Environment.GetCommandLineArgs().Skip(1);
             do
@@ -114,6 +115,18 @@ namespace TrimVideo.ViewModels
         private void _SelectFile()
         {
             // Todo
+        }
+
+        private void _SkipFile()
+        {
+            if (_otherArguments.FirstOrDefault() != null)
+            {
+                NewInstance(_otherArguments);
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
         }
 
         private void _SaveFile()
