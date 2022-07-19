@@ -20,6 +20,7 @@
 	<Window.InputBindings>
 		<KeyBinding Key="Space" Command="{Binding TogglePlaybackCommand}" />
 		<KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveFileCommand}" />
+		<KeyBinding Key="M" Command="{Binding ToggleMutedCommand}" />
 		<KeyBinding Key="Esc" Command="{Binding SkipFileCommand}" />
 	</Window.InputBindings>
 
@@ -29,9 +30,9 @@
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
 		<MediaElement x:Name="videoControl" LoadedBehavior="Manual" 
@@ -42,10 +43,60 @@
 				<MouseBinding Command="{Binding TogglePlaybackCommand}" MouseAction="LeftClick"/>
 			</MediaElement.InputBindings>
 		</MediaElement>
-		<TextBlock Grid.Row="1" FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold" 
-							 Foreground="DarkGray"
-							 Text="{Binding ClipLength, Mode=OneWay}" 
-							 Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Height="50">
+			<TextBlock FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold"
+								 VerticalAlignment="Center"
+								 Margin="10"
+								 Foreground="DarkGray"
+								 Text="{Binding ClipLength, Mode=OneWay, StringFormat={}{0:hh\\:mm\\:ss}}" 
+								 Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			<Button Background="Transparent" BorderBrush="Transparent" Focusable="False" 
+							Command="{Binding TogglePlaybackCommand}">
+				<Button.Style>
+					<Style TargetType="Button">
+						<Setter Property="Content">
+							<Setter.Value>
+								<Image Source="Images/Play.png"/>
+							</Setter.Value>
+						</Setter>
+
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsPlaying}" 
+													 Value="True">
+								<Setter Property="Content">
+									<Setter.Value>
+										<Image Source="Images/Pause.png"/>
+									</Setter.Value>
+								</Setter>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
+			<Button Background="Transparent" BorderBrush="Transparent" Focusable="False" 
+							Command="{Binding ToggleMutedCommand}">
+				<Button.Style>
+					<Style TargetType="Button">
+						<Setter Property="Content">
+							<Setter.Value>
+								<Image Source="Images/Sound On.png"/>
+							</Setter.Value>
+						</Setter>
+
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsMuted}" 
+													 Value="True">
+								<Setter Property="Content">
+									<Setter.Value>
+										<Image Source="Images/Sound Off.png"/>
+									</Setter.Value>
+								</Setter>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
+		</StackPanel>
 		<controls:TripleThumbSlider x:Name="timelineSlider" Grid.Row="2" HorizontalAlignment="Stretch" Margin="20" Height="80"
 						MiddleValue="{Binding VideoProgress, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}"
 						LowerValue="{Binding VideoLowerBound, Converter={StaticResource DoubleToTimeSpanConverter}, Mode=TwoWay}" 

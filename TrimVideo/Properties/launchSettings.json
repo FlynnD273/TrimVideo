@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TrimVideo": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "D:\\Flynn\\Documents\\Blender\\Projects\\Animation\\SoM\\Renders\\_demo.mp4"
     }
   }
 }

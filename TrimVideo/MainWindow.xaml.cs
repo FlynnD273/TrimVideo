@@ -35,6 +35,9 @@ namespace TrimVideo
                 case nameof(ViewModel.IsPlaying):
                     UpdatePlayState();
                     break;
+                case nameof(ViewModel.IsMuted):
+                    UpdateIsMuted();
+                    break;
             }
         }
 
@@ -50,6 +53,11 @@ namespace TrimVideo
                 videoControl.Pause();
                 _timer?.Stop();
             }
+        }
+
+        private void UpdateIsMuted()
+        {
+            videoControl.IsMuted = _vm.IsMuted;
         }
 
         private void OnMediaLoaded(object sender, RoutedEventArgs e)
@@ -92,7 +100,7 @@ namespace TrimVideo
         {
             videoControl.Position = _vm.VideoProgress;
             _isDragging = false;
-            videoControl.IsMuted = false;
+            UpdateIsMuted();
             UpdatePlayState();
         }
 

@@ -10,7 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <None Remove="Images\Pause.png" />
+    <None Remove="Images\Play.png" />
+    <None Remove="Images\Sound Off.png" />
+    <None Remove="Images\Sound On.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Pause.png" />
+    <Resource Include="Images\Play.png" />
+    <Resource Include="Images\Sound Off.png" />
+    <Resource Include="Images\Sound On.png" />
   </ItemGroup>
 
 </Project>
