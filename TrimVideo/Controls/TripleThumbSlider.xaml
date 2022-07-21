@@ -10,7 +10,7 @@
 	<UserControl.Resources>
 		
 	</UserControl.Resources>
-	<Canvas x:Name="canvas" MouseDown="MouseDown" MouseMove="MouseMove" MouseUp="MouseUp" 
+	<Canvas x:Name="canvas" MouseDown="OnMouseDown" MouseMove="OnMouseMove" MouseUp="OnMouseUp" 
 					Background="Gray"
 					Width="{Binding ElementName=root, Path=ActualWidth}" Height="60">
 		<Rectangle x:Name="lowerThumb" Canvas.Top="-20" Width="20" Height="60" Fill="#FF0A8200"/>

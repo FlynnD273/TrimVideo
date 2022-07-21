@@ -26,6 +26,12 @@ namespace TrimVideo
             InitializeComponent();
             _vm = (ViewModel)DataContext;
             _vm.PropertyChanged += _OnPropertyChanged;
+
+            _timer = new()
+            {
+                Interval = TimeSpan.FromMilliseconds(200),
+            };
+            _timer.Tick += (_, _) => _OnTick();
         }
 
         private void _OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -62,11 +68,6 @@ namespace TrimVideo
 
         private void OnMediaLoaded(object sender, RoutedEventArgs e)
         {
-            _timer = new()
-            {
-                Interval = TimeSpan.FromMilliseconds(200),
-            };
-            _timer.Tick += (_, _) => _OnTick();
             _timer.Start();
 
             timelineSlider.Minimum = 0;
@@ -139,13 +140,13 @@ namespace TrimVideo
             if (files != null)
             {
                 e.Effects = DragDropEffects.Move;
+                ViewModel.NewInstance(files);
             }
             else
             {
                 e.Effects = DragDropEffects.None;
             }
 
-            _vm.NewInstance(files);
             e.Handled = true;
         }
     }
