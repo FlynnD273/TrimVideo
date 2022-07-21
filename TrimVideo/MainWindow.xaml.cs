@@ -98,6 +98,8 @@ namespace TrimVideo
 
         private void TripleThumbSlider_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            if (!_isDragging) return;
+
             videoControl.Position = _vm.VideoProgress;
             _isDragging = false;
             UpdateIsMuted();

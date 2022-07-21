@@ -172,12 +172,9 @@ namespace TrimVideo.Controls
 
         private void MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed) return;
-
             Canvas parent = (Canvas)sender;
 
-            if (!parent.IsMouseCaptured) 
-                return;
+            if (e.LeftButton != MouseButtonState.Pressed || !parent.IsMouseCaptured) return;
 
             Point position = e.GetPosition(parent);
 
@@ -201,10 +198,11 @@ namespace TrimVideo.Controls
         private void MouseUp(object sender, MouseButtonEventArgs e)
         {
             Canvas parent = (Canvas)sender;
-
-            parent.ReleaseMouseCapture();
+            if (!parent.IsMouseCaptured) return;
 
             if (_dragMode == DragMode.UpperValue) MiddleValue = LowerValue;
+
+            parent.ReleaseMouseCapture();
         }
     }
 }
