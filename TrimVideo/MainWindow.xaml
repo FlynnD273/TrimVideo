@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:TrimVideo.ViewModels"
         mc:Ignorable="d"
         Title="Trim Video" Height="450" Width="800"
-				Background="#222222"
+				Background="Black"
 				WindowState="Maximized"
 				AllowDrop="True" 
 				DragOver="Window_DragOver"
@@ -47,7 +47,7 @@
 			<TextBlock FontSize="30" FontFamily="Cascadia Code" FontWeight="DemiBold"
 								 VerticalAlignment="Center"
 								 Margin="10"
-								 Foreground="DarkGray"
+								 Foreground="White"
 								 Text="{Binding ClipLength, Mode=OneWay, StringFormat={}{0:hh\\:mm\\:ss}}" 
 								 Visibility="{Binding IsActivated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 			<Button Background="Transparent" BorderBrush="Transparent" Focusable="False" 
