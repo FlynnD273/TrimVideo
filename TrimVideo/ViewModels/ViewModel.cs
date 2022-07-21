@@ -12,7 +12,7 @@ namespace TrimVideo.ViewModels
 {
     internal class ViewModel : NotifyPropertyChangedBase
     {
-        private string _filePath;
+        private string _filePath = "";
         public string FilePath
         {
             get { return _filePath; }
@@ -64,14 +64,13 @@ namespace TrimVideo.ViewModels
         }
 
         public ICommand SelectFileCommand { get; }
-        public ICommand OpenFilePathCommand { get; }
         public ICommand SaveFileCommand { get; }
         public ICommand SkipFileCommand { get; }
 
         public ICommand TogglePlaybackCommand { get; }
         public ICommand ToggleMutedCommand { get; }
 
-        private IEnumerable<string> _otherArguments;
+        private readonly IEnumerable<string> _otherArguments = Enumerable.Empty<string>();
 
         private bool _isActivated = true;
         public bool IsActivated
@@ -91,7 +90,7 @@ namespace TrimVideo.ViewModels
             var args = Environment.GetCommandLineArgs().Skip(1);
             do
             {
-                if (args.Count() > 0)
+                if (args.Any())
                 {
                     if (Directory.Exists(args.First()))
                     {
@@ -128,7 +127,7 @@ namespace TrimVideo.ViewModels
 
         private void _SkipFile()
         {
-            if (_otherArguments.FirstOrDefault() != null)
+            if (_otherArguments.Any())
             {
                 NewInstance(_otherArguments);
             }
@@ -147,7 +146,7 @@ namespace TrimVideo.ViewModels
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "ffmpeg",
-                    Arguments = $" -i \"{FilePath}\" -ss {VideoLowerBound} -to {VideoUpperBound} -c copy \"{Path.Combine(Path.GetDirectoryName(FilePath), "_" + Path.GetFileNameWithoutExtension(FilePath) + "_Trim" + Path.GetExtension(FilePath))}\" -y",
+                    Arguments = $" -i \"{FilePath}\" -ss {VideoLowerBound} -to {VideoUpperBound} -c copy \"{Path.Combine(Path.GetDirectoryName(FilePath) ?? "", "_" + Path.GetFileNameWithoutExtension(FilePath) + "_Trim" + Path.GetExtension(FilePath))}\" -y",
                     UseShellExecute = false,
                     CreateNoWindow = false,
                 }
@@ -155,13 +154,13 @@ namespace TrimVideo.ViewModels
             process.Start();
             process.WaitForExit();
 
-            if (_otherArguments.FirstOrDefault() != null)
+            if (_otherArguments.Any())
             {
                 NewInstance(_otherArguments);
             }
         }
 
-        public void NewInstance(IEnumerable<string> args)
+        public static void NewInstance(IEnumerable<string> args)
         {
             Process newInstance = new()
             {

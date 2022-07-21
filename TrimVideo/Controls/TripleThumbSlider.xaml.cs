@@ -125,7 +125,7 @@ namespace TrimVideo.Controls
 
         private DragMode _dragMode;
 
-        private void MouseDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             Canvas parent = (Canvas)sender;
             Point position = e.GetPosition(parent);
@@ -170,7 +170,7 @@ namespace TrimVideo.Controls
             }
         }
 
-        private void MouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object sender, MouseEventArgs e)
         {
             Canvas parent = (Canvas)sender;
 
@@ -195,7 +195,7 @@ namespace TrimVideo.Controls
             }
         }
 
-        private void MouseUp(object sender, MouseButtonEventArgs e)
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             Canvas parent = (Canvas)sender;
             if (!parent.IsMouseCaptured) return;
