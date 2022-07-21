@@ -110,7 +110,7 @@ namespace TrimVideo.ViewModels
 
             if (string.IsNullOrEmpty(FilePath))
             {
-                IsActivated = false;
+                IsActivated = false
             }
         }
 
