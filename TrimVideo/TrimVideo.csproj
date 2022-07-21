@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Images\Pause.png" />
     <Resource Include="Images\Play.png" />
     <Resource Include="Images\Sound Off.png" />

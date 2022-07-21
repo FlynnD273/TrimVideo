@@ -12,15 +12,16 @@ namespace TrimVideo.Commands
         public event EventHandler? CanExecuteChanged;
 
         private Action<T> _execute;
-        private Func<T, bool> _canExecute;
+        private Func<T, bool>? _canExecute;
+        private bool _canExecuteState;
 
-        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute = null)
+        public DelegateCommand(Action<T> execute, Func<T, bool>? canExecute = null)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
 
-        public DelegateCommand(Action execute, Func<T, bool> canExecute = null)
+        public DelegateCommand(Action execute, Func<T, bool>? canExecute = null)
         {
             _execute = _ => execute.Invoke();
             _canExecute = canExecute;
@@ -34,7 +35,13 @@ namespace TrimVideo.Commands
             }
 
             T param = (T)parameter;
-            return _canExecute?.Invoke(param) ?? true;
+            bool prevCanExecuteState = _canExecuteState;
+
+            _canExecuteState = _canExecute?.Invoke(param) ?? true;
+
+            if (prevCanExecuteState != _canExecuteState) CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+            return _canExecuteState;
         }
 
         public void Execute(object? parameter)

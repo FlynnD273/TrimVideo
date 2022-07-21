@@ -62,6 +62,8 @@ namespace TrimVideo.Controls
             set { SetValue(MaximumProperty, value); }
         }
 
+        private double _xOffset;
+
         public TripleThumbSlider()
         {
             InitializeComponent();
@@ -71,7 +73,7 @@ namespace TrimVideo.Controls
         {
             var t = (TripleThumbSlider)d;
             var lowerThumb = t.lowerThumb;
-            lowerThumb.SetValue(Canvas.LeftProperty, (t.LowerValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth - lowerThumb.ActualWidth / 2);
+            lowerThumb.SetValue(Canvas.LeftProperty, (t.LowerValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth);
 
             t.MiddleValue = t.LowerValue;
         }
@@ -80,14 +82,14 @@ namespace TrimVideo.Controls
         {
             var t = (TripleThumbSlider)d;
             var middleThumb = t.middleThumb;
-            middleThumb.SetValue(Canvas.LeftProperty, (t.MiddleValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth - middleThumb.ActualWidth / 2);
+            middleThumb.SetValue(Canvas.LeftProperty, (t.MiddleValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth);
         }
 
         private static void UpperValuePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var t = (TripleThumbSlider)d;
             var upperThumb = t.upperThumb;
-            upperThumb.SetValue(Canvas.LeftProperty, (t.UpperValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth - upperThumb.ActualWidth / 2);
+            upperThumb.SetValue(Canvas.LeftProperty, (t.UpperValue - t.Minimum) / (t.Maximum - t.Minimum) * t.canvas.ActualWidth);
 
             t.MiddleValue = t.UpperValue;
         }
@@ -130,10 +132,18 @@ namespace TrimVideo.Controls
             Canvas parent = (Canvas)sender;
             Point position = e.GetPosition(parent);
 
-            // Remap range from 0 - grid width to Minimum - Maximum
-            double xValue = position.X / parent.ActualWidth * (Maximum - Minimum) + Minimum;
+            FrameworkElement over = (FrameworkElement)Mouse.DirectlyOver;
+            if (over == parent)
+            {
+                _xOffset = 0;
+            }
+            else
+            {
+                _xOffset = (Canvas.GetLeft(over) - position.X) / parent.ActualWidth * (Maximum - Minimum) + Minimum;
+            }
 
-            var over = Mouse.DirectlyOver;
+            // Remap range from 0 - grid width to Minimum - Maximum
+            double xValue = position.X / parent.ActualWidth * (Maximum - Minimum) + Minimum + _xOffset;
 
             bool onThumb = false;
             if (over == lowerThumb)
@@ -147,6 +157,12 @@ namespace TrimVideo.Controls
                 UpperValue = xValue;
                 onThumb = true;
                 _dragMode = DragMode.UpperValue;
+            }
+            else if (over == middleThumb)
+            {
+                MiddleValue = xValue;
+                onThumb = true;
+                _dragMode = DragMode.MiddleValue;
             }
 
             parent.CaptureMouse();
@@ -179,7 +195,7 @@ namespace TrimVideo.Controls
             Point position = e.GetPosition(parent);
 
             // Remap range from 0 - grid width to Minimum - Maximum
-            double xValue = position.X / parent.ActualWidth * (Maximum - Minimum) + Minimum;
+            double xValue = position.X / parent.ActualWidth * (Maximum - Minimum) + Minimum + _xOffset;
 
             switch (_dragMode)
             {
