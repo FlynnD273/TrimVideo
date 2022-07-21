@@ -13,7 +13,7 @@
 	<Canvas x:Name="canvas" MouseDown="OnMouseDown" MouseMove="OnMouseMove" MouseUp="OnMouseUp" 
 					Background="#333333"
 					Width="{Binding ElementName=root, Path=ActualWidth}" Height="60">
-		<Polygon x:Name="lowerThumb" Canvas.Top="-20" Fill="White">
+		<Polygon x:Name="lowerThumb" Canvas.Top="-20" Fill="White" Margin="-10,0,0,0">
 			<Polygon.Points>
 				<Point X="0" Y="0"/>
 				<Point X="20" Y="0"/>
@@ -22,7 +22,7 @@
 				<Point X="0" Y="30"/>
 			</Polygon.Points>
 		</Polygon>
-		<Polygon x:Name="upperThumb" Canvas.Top="-20" Fill="White">
+		<Polygon x:Name="upperThumb" Canvas.Top="-20" Fill="White" Margin="-10,0,0,0">
 			<Polygon.Points>
 			<Point X="0" Y="0"/>
 			<Point X="20" Y="0"/>
@@ -31,7 +31,7 @@
 			<Point X="0" Y="30"/>
 			</Polygon.Points>
 		</Polygon>
-		<Ellipse x:Name="middleThumb" Canvas.Top="0" Width="60" Height="60" StrokeThickness="3" Stroke="Black">
+		<Ellipse x:Name="middleThumb" Canvas.Top="0" Width="60" Height="60" Margin="-30,0,0,0" StrokeThickness="3" Stroke="Black">
 			<Ellipse.Fill>
 				<RadialGradientBrush GradientOrigin="0.1,0.1" RadiusX="0.5" RadiusY="0.5">
 					<GradientStop Color="LightBlue" Offset="0"/>

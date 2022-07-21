@@ -10,11 +10,11 @@ namespace TrimVideo.ViewModels
 {
     class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void _UpdateField<T>(ref T field, T newValue,
-            Action<T> onChangedCallback = null,
-            [CallerMemberName] string propertyName = null)
+            Action<T>? onChangedCallback = null,
+            [CallerMemberName] string propertyName = "")
         {
             if (EqualityComparer<T>.Default.Equals(field, newValue))
             {
