@@ -16,9 +16,6 @@ using System.Windows.Shapes;
 
 namespace TrimVideo.Controls
 {
-    /// <summary>
-    /// Interaction logic for TripleThumbSlider.xaml
-    /// </summary>
     public partial class TripleThumbSlider : UserControl
     {
         public static readonly DependencyProperty MinimumProperty =
