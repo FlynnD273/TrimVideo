@@ -13,6 +13,7 @@
 				AllowDrop="True" 
 				DragOver="Window_DragOver"
 				Drop="Window_DragDrop"
+        x:Name="mainWindow"
 				Title="{Binding FilePath}">
 	<Window.DataContext>
 		<vm:ViewModel />
