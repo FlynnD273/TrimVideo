@@ -30,8 +30,11 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     
+    - name: List files
+      run: Get-ChildItem -Recurse
+    
     - name: Zip artifact for deployment
-      run: zip "TrimVideo-${{ github.ref_name }}.zip" ./bin/Release/net6.0 -r
+      run: Compress-Archive ./bin/Release/net6.0 "TrimVideo-${{ github.ref_name }}.zip"
         
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
