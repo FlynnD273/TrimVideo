@@ -34,7 +34,7 @@ jobs:
       run: Get-ChildItem -Recurse
     
     - name: Zip artifact for deployment
-      run: Compress-Archive ./bin/Release/net6.0 "TrimVideo-${{ github.ref_name }}.zip"
+      run: Compress-Archive TrimVideo\bin\Release\net6.0-windows "TrimVideo-${{ github.ref_name }}.zip"
         
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
