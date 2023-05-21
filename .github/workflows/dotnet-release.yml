@@ -12,9 +12,10 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
-
+    permissions:
+      contents: write
+      
     steps:
     
     - uses: actions/checkout@v3
@@ -29,9 +30,8 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     
-    - uses: edgarrc/action-7z@v1
-      with:
-        args: 7z a -t7z -mx=9 "TrimVideo-${{ github.ref_name }}.zip" ./bin/Release/net6.0
+    - name: Zip artifact for deployment
+      run: zip "TrimVideo-${{ github.ref_name }}.zip" ./bin/Release/net6.0 -r
         
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
