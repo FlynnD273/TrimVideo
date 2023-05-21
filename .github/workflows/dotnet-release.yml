@@ -45,10 +45,14 @@ jobs:
         draft: false
         prerelease: false
         
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+    # Upload release asset:   https://github.com/actions/upload-release-asset
+    - name: Update release asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: TrimVideo-${{ github.ref_name }}
-        path: "TrimVideo-${{ github.ref_name }}.zip"
+        upload_url: ${{ steps.create_release.outputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: "TrimVideo-${{ github.ref_name }}.zip"
+        asset_name: TrimVideo-${{ github.ref_name }}
+        asset_content_type: application/zip
