@@ -146,7 +146,7 @@ namespace TrimVideo.ViewModels
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "ffmpeg",
-                    Arguments = $" -i \"{FilePath}\" -ss {VideoLowerBound} -to {VideoUpperBound} -c copy \"{Path.Combine(Path.GetDirectoryName(FilePath) ?? "", "_" + Path.GetFileNameWithoutExtension(FilePath) + "_Trim" + Path.GetExtension(FilePath))}\" -y",
+                    Arguments = $" -i \"{FilePath}\" -ss {VideoLowerBound} -to {VideoUpperBound} \"{Path.Combine(Path.GetDirectoryName(FilePath) ?? "", "_" + Path.GetFileNameWithoutExtension(FilePath) + "_Trim" + Path.GetExtension(FilePath))}\" -y",
                     UseShellExecute = false,
                     CreateNoWindow = false,
                 }
@@ -178,6 +178,9 @@ namespace TrimVideo.ViewModels
 
         private void _TogglePlayback()
         {
+						if (!IsPlaying && VideoProgress >= VideoUpperBound) {
+							VideoProgress = VideoLowerBound;
+						}
             IsPlaying = !IsPlaying;
         }
 

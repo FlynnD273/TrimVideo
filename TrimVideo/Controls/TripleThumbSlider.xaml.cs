@@ -16,9 +16,6 @@ using System.Windows.Shapes;
 
 namespace TrimVideo.Controls
 {
-    /// <summary>
-    /// Interaction logic for TripleThumbSlider.xaml
-    /// </summary>
     public partial class TripleThumbSlider : UserControl
     {
         public static readonly DependencyProperty MinimumProperty =
@@ -67,6 +64,16 @@ namespace TrimVideo.Controls
         public TripleThumbSlider()
         {
             InitializeComponent();
+            SizeChanged += (_, _) => _UpdateAllPositions();
+        }
+
+        private void _UpdateAllPositions()
+        {
+            var middleValue = MiddleValue;
+            LowerValuePropertyChangedCallback(this, new());
+            MiddleValuePropertyChangedCallback(this, new());
+            UpperValuePropertyChangedCallback(this, new());
+            MiddleValue = middleValue;
         }
 
         private static void LowerValuePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

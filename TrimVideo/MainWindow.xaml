@@ -7,12 +7,14 @@
         xmlns:c="clr-namespace:TrimVideo.Converters"
         xmlns:vm="clr-namespace:TrimVideo.ViewModels"
         mc:Ignorable="d"
-        Title="Trim Video" Height="450" Width="800"
+        Height="450" Width="800"
 				Background="Black"
 				WindowState="Maximized"
 				AllowDrop="True" 
 				DragOver="Window_DragOver"
-				Drop="Window_DragDrop">
+				Drop="Window_DragDrop"
+        x:Name="mainWindow"
+				Title="{Binding FilePath}">
 	<Window.DataContext>
 		<vm:ViewModel />
 	</Window.DataContext>

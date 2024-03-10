@@ -2,7 +2,7 @@
   "profiles": {
     "TrimVideo": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\Flynn\\Documents\\Blender\\Projects\\Animation\\SoM\\Renders\\_demo.mp4"
+      "commandLineArgs": "\"C:\\Users\\Flynn\\Videos\\Valorant\\Valorant 2023.03.16 - 21.02.44.04.DVR.mp4\""
     }
   }
 }

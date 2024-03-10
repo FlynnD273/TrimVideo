@@ -7,6 +7,8 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <PackageIcon>TrimVideo.png</PackageIcon>
+    <ApplicationIcon>TrimValorant.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="TrimValorant.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="D:\Flynn\Pictures\Icons\TrimVideo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +35,21 @@
     <Resource Include="Images\Play.png" />
     <Resource Include="Images\Sound Off.png" />
     <Resource Include="Images\Sound On.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>
