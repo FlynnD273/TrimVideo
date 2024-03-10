@@ -38,6 +38,9 @@ namespace TrimVideo
         {
             switch (e.PropertyName)
             {
+                case nameof(ViewModel.VideoProgress):
+                    UpdateProgress();
+                    break;
                 case nameof(ViewModel.IsPlaying):
                     UpdatePlayState();
                     break;
@@ -64,6 +67,11 @@ namespace TrimVideo
         private void UpdateIsMuted()
         {
             videoControl.IsMuted = _vm.IsMuted;
+        }
+
+        private void UpdateProgress()
+        {
+            videoControl.Position = _vm.VideoProgress;
         }
 
         private void OnMediaLoaded(object sender, RoutedEventArgs e)

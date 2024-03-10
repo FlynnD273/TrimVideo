@@ -178,6 +178,9 @@ namespace TrimVideo.ViewModels
 
         private void _TogglePlayback()
         {
+						if (!IsPlaying && VideoProgress >= VideoUpperBound) {
+							VideoProgress = VideoLowerBound;
+						}
             IsPlaying = !IsPlaying;
         }
 
