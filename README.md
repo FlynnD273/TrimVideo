@@ -1,3 +1,5 @@
+# ⚠️ This repository has migrated to [Codeberg](https://codeberg.org/FlynnD273/trim-video)
+
 # TrimVideo
 
 A lightweight utility for trimming videos quickly.
